@@ -8,10 +8,11 @@
   <Router {routes} />
 </main>
 
-
-
 <style global lang="postcss">
   @tailwind base;
   @tailwind components;
   @tailwind utilities;
+	body{
+		padding: 0px;
+	}
 </style>
