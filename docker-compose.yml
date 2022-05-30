@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  app:
+    build: ./docker/app/
+    user: "node:node"
+    container_name: "${CONTAINER_NAME}"
+    environment:
+      NODE_ENV: "development"
+    volumes:
+      - ./workspace/svelte_app:/usr/src/app/workspace/svelte_app
+    working_dir: /usr/src/app/workspace/svelte_app
+    ports:
+      - ${WEB_HOST_PORT}:${WEB_CONTAINER_PORT}
+    tty: true
