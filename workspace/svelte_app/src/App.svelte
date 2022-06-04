@@ -1,10 +1,11 @@
 <script lang="ts">
   import Router, { push } from "svelte-spa-router";
-  import routes from "./router";
+  import Header from "./component/layout/Header.svelte";
+  import { routes } from "./router";
 </script>
 
-<main>
-	<button class="bg-red-300 w-[500px]" on:click={ () => { push("/router_test") } }>button</button>
+<Header />
+<main class="h-[calc(100%-50px)]">
   <Router {routes} />
 </main>
 
@@ -12,7 +13,7 @@
   @tailwind base;
   @tailwind components;
   @tailwind utilities;
-	body{
-		padding: 0px;
-	}
+  body {
+    padding: 0px;
+  }
 </style>
