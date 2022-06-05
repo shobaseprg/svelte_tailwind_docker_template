@@ -5,8 +5,12 @@
   import SideMenu from "../layout/SideMenu.svelte";
   let menuList = [
     {
-      title: "オブジェクトからツリーを作成する",
+      title: "オブジェクトから再起的にリストを作る１",
       path: "/javascript/createTree",
+    },
+    {
+      title: "オブジェクトから再起的にリストを作る2",
+      path: "/javascript/createTree2",
     },
     {
       title: "リストを作成する",

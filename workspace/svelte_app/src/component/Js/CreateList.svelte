@@ -14,6 +14,8 @@
       }
 
       let li = document.createElement("li");
+      li.classList.add("list-disc");
+      li.classList.add("ml-[20px]");
       li.textContent = data;
       ul.append(li);
     }
@@ -21,7 +23,7 @@
 </script>
 
 <div>
-  <p>Create a list</p>
+  <p class="mb-[10px]">Create a list</p>
   <div id="list" />
 </div>
 
