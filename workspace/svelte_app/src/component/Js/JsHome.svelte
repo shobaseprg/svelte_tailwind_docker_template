@@ -16,6 +16,22 @@
       title: "リストを作成する",
       path: "/javascript/createList",
     },
+    {
+      title: "子孫の数を数える",
+      path: "/javascript/countDescendants",
+    },
+    {
+      title: "カレンダーを作成",
+      path: "/javascript/calendar",
+    },
+    {
+      title: "DOM",
+      path: "/javascript/dom",
+    },
+    {
+      title: "selection range",
+      path: "/javascript/selectionRange",
+    },
   ];
 
   const prefix = "/javascript";
