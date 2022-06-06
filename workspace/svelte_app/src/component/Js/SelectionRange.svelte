@@ -36,11 +36,11 @@
     }
   }
   function resetExample() {
-    p.innerHTML = `Example: <i>italic</i> and <b>bold</b>`;
+    p.innerHTML = `Example: <i>italic</i> and <b>b<span>ol</span>d</b>`;
     result.innerHTML = "";
 
-    range.setStart(p.firstChild, 2);
-    range.setEnd(p.querySelector("b").firstChild, 3);
+    range.setStart(p.childNodes[startNodeIndex], startOffset);
+    range.setEnd(p.childNodes[endNodeIndex], endOffset);
 
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);
@@ -57,43 +57,36 @@
   let startOffset: number = 0;
   let endOffset: number = 0;
 
-  let startNode: number = 0;
-  let endNode: number = 0;
+  let startNodeIndex: number = 0;
+  let endNodeIndex: number = 0;
 
-  function clickNode() {
-    try {
-      range.setStart(p.childNodes[startNode], startOffset);
-      range.setEnd(p.childNodes[endNode], endOffset);
-      document.getSelection().removeAllRanges();
-      document.getSelection().addRange(range);
+  let outerHTML: string = "";
 
-      console.log("【ログ: 】", p.childNodes[startNode]);
-      console.log("【ログ: 】", p.childNodes[endNode]);
-    } catch (e) {
-      alert(e);
-    }
+  let startNode;
+  let endNode;
+
+  function setSelection() {
+    range.setStart(p.childNodes[startNodeIndex], startOffset);
+    range.setEnd(p.childNodes[endNodeIndex], endOffset);
+    document.getSelection().removeAllRanges();
+    document.getSelection().addRange(range);
+
+    outerHTML = p.outerHTML;
+    startNode = p.childNodes[startNodeIndex].nodeValue;
+    endNode =
+      p.childNodes[endNodeIndex].nodeType === 1
+        ? p.childNodes[endNodeIndex].textContent
+        : p.childNodes[endNodeIndex].nodeValue;
   }
-
-  function clickOffset() {
-    try {
-    } catch (error) {
-      range.setStart(p.firstChild, startOffset);
-      range.setEnd(p.querySelector("b").firstChild, endOffset);
-      document.getSelection().removeAllRanges();
-      document.getSelection().addRange(range);
-    }
-  }
-
-  let exst = `<p>Example:
-  <i>italic</i> and <b>bold</b>
-</p>`;
 </script>
 
 <div>
-  <p class="mb-[10px]">{exst}</p>
+  <div>{outerHTML}</div>
+  <div>{startNode}</div>
+  <div>{endNode}</div>
   <div class="flex">
     <p>range :</p>
-    <p id="p" class="h-[20px]">
+    <p id="p">
       Example: <i>italic</i> and <b>b<span>ol</span>d</b>
     </p>
   </div>
@@ -103,16 +96,18 @@
   </div>
 
   <div class="mt-10">
+    <p>node</p>
     <div>
-      <input id="start" type="number" bind:value={startNode} />
-      <input id="end" type="number" bind:value={endNode} />
-      <button id="button" on:click={clickNode}>set node</button>
+      <input id="start" type="number" bind:value={startNodeIndex} />
+      <input id="end" type="number" bind:value={endNodeIndex} />
     </div>
+    <p>offset</p>
     <div>
       <input id="start" type="number" bind:value={startOffset} />
       <input id="end" type="number" bind:value={endOffset} />
-      <button id="button" on:click={clickOffset}>set offest</button>
     </div>
+    <button id="button" on:click={setSelection}>set selection</button>
+
     <div class="mt-[30px]" id="buttons">
       <div><button on:click={deleteContents}>deleteContents</button></div>
       <div><button on:click={extractContents}>extractContents</button></div>
