@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>test</title>
+</head>
+
+<body>
+  <form action="?">
+    <p>
+      <input id="aaa" type="text" value="testtest">
+      <input type="button" value="check" onclick="check();">
+    </p>
+  </form>
+  <script type="text/javascript">
+    function check() {
+      var input = document.getElementById('aaa');
+      console.log(input.value);
+    }
+  </script>
+</body>
+
+</html>

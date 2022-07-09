@@ -5,7 +5,25 @@
   let result;
   let buttons;
 
-  let range = new Range();
+  let range: Range;
+
+  let startOffset: number = 0;
+  let endOffset: number = 0;
+
+  let startNodeIndex: number = 0;
+  let endNodeIndex: number = 0;
+
+  let startNode;
+  let endNode;
+
+  onMount(() => {
+    range = new Range();
+    p = document.getElementById("p");
+    result = document.getElementById("result");
+    buttons = document.getElementById("buttons");
+
+    resetExample();
+  });
 
   /**選択範囲の削除*/
   function deleteContents() {
@@ -35,8 +53,10 @@
       alert(e);
     }
   }
+  const EXAMPLE = `<p>ひとつめ<span>ふたつめ</span><b>みっつめふとじ<span>（こども）</span>だよ</b></p>`;
   function resetExample() {
-    p.innerHTML = `Example: <i>italic</i> and <b>b<span>ol</span>d</b>`;
+    p.innerHTML =
+      "ひとつめ<span class='text-blue-600'>ふたつめ</span><b class='text-green-600'>みっつめはふとじ<span class='text-black'>（こども）</span>だよ</b>";
     result.innerHTML = "";
 
     range.setStart(p.childNodes[startNodeIndex], startOffset);
@@ -46,49 +66,41 @@
     window.getSelection().addRange(range);
   }
 
-  onMount(() => {
-    p = document.getElementById("p");
-    result = document.getElementById("result");
-    buttons = document.getElementById("buttons");
-
-    resetExample();
-  });
-
-  let startOffset: number = 0;
-  let endOffset: number = 0;
-
-  let startNodeIndex: number = 0;
-  let endNodeIndex: number = 0;
-
-  let outerHTML: string = "";
-
-  let startNode;
-  let endNode;
-
   function setSelection() {
-    range.setStart(p.childNodes[startNodeIndex], startOffset);
-    range.setEnd(p.childNodes[endNodeIndex], endOffset);
-    document.getSelection().removeAllRanges();
-    document.getSelection().addRange(range);
+    try {
+      range.setStart(p.childNodes[startNodeIndex], startOffset);
+      range.setEnd(p.childNodes[endNodeIndex], endOffset);
+      console.dir("【ログ: range】", range);
+      document.getSelection().removeAllRanges();
+      document.getSelection().addRange(range);
 
-    outerHTML = p.outerHTML;
-    startNode = p.childNodes[startNodeIndex].nodeValue;
-    endNode =
-      p.childNodes[endNodeIndex].nodeType === 1
-        ? p.childNodes[endNodeIndex].textContent
-        : p.childNodes[endNodeIndex].nodeValue;
+      startNode =
+        p.childNodes[startNodeIndex].nodeType === 1
+          ? p.childNodes[startNodeIndex].textContent
+          : p.childNodes[startNodeIndex].nodeValue;
+
+      endNode =
+        p.childNodes[endNodeIndex].nodeType === 1
+          ? p.childNodes[endNodeIndex].textContent
+          : p.childNodes[endNodeIndex].nodeValue;
+
+      console.log("【ログ: range】", range);
+    } catch (e) {
+      alert(e);
+    }
   }
 </script>
 
 <div>
-  <div>{outerHTML}</div>
-  <div>{startNode}</div>
-  <div>{endNode}</div>
+  <div>【例】{EXAMPLE}</div>
+  <div>
+    <span>【スタートノード】</span>
+    {startNode}
+  </div>
+  <div><span>【エンドノード】</span>{endNode}</div>
   <div class="flex">
     <p>range :</p>
-    <p id="p">
-      Example: <i>italic</i> and <b>b<span>ol</span>d</b>
-    </p>
+    <p id="p" class="text-red-600" />
   </div>
   <div class="felx">
     <p>result :</p>
@@ -96,15 +108,25 @@
   </div>
 
   <div class="mt-10">
-    <p>node</p>
-    <div>
-      <input id="start" type="number" bind:value={startNodeIndex} />
-      <input id="end" type="number" bind:value={endNodeIndex} />
+    <div class="flex">
+      <div>
+        <p>start container</p>
+        <input id="start" type="number" bind:value={startNodeIndex} />
+      </div>
+      <div>
+        <p>start offset</p>
+        <input id="start" type="number" bind:value={startOffset} />
+      </div>
     </div>
-    <p>offset</p>
-    <div>
-      <input id="start" type="number" bind:value={startOffset} />
-      <input id="end" type="number" bind:value={endOffset} />
+    <div class="flex">
+      <div>
+        <p>end container</p>
+        <input id="end" type="number" bind:value={endNodeIndex} />
+      </div>
+      <div>
+        <p>end offset</p>
+        <input id="end" type="number" bind:value={endOffset} />
+      </div>
     </div>
     <button id="button" on:click={setSelection}>set selection</button>
 

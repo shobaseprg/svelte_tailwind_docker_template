@@ -1,0 +1,37 @@
+<table id="aaaaa">
+  <thead>
+    <tr>
+      <td>thead1</td>
+      <td>thead2</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>tbody1</td>
+      <td>tbody2</td>
+    </tr>
+    <tr>
+      <td>tbody3</td>
+      <td>tbody4</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td>tfoot1</td>
+      <td>tfoot2</td>
+    </tr>
+  </tfoot>
+</table>
+
+<script type="text/javascript">
+  var table = document.getElementById('aaaaa');
+
+  var tbody = table.tBodies.item(0);
+
+  var newtr = tbody.insertRow(1);
+
+  for (var i = 0; i < 2; i++) {
+    var newtd = newtr.insertCell(newtr.cells.length);
+    newtd.appendChild(document.createTextNode('testtest' + i));
+  }
+</script>

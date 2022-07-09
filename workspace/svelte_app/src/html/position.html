@@ -1,0 +1,36 @@
+<html>
+<div id="coords-show-mark">elem</div>
+
+</html>
+
+<script>
+  let elem = document.getElementById("coords-show-mark");
+  elem.style.marginLeft = " 200px";
+  elem.style.marginTop = "200px";
+  elem.style.border = "solid 1px black";
+
+  function createMessageUnder(elem, html) {
+    // メッセージ要素の作成
+    let message = document.createElement('div');
+    // ここでは、スタイルにCSSクラスを使う方が良いです
+    message.style.cssText = "position:fixed; color: red";
+
+    // 座標の設定, "px" を忘れないこと!
+    let coords = elem.getBoundingClientRect();
+    console.log("【ログ: coords】", coords);
+
+    message.style.marginLeft = coords.left + "px";
+    message.style.marginTop = coords.bottom + "px";
+    message.style.border = "solid 1px black";
+
+    message.innerHTML = html;
+
+    return message;
+  }
+
+  // 使用例:
+  // ドキュメント上に５秒間追加します
+  let message = createMessageUnder(elem, 'Hello, world!');
+  document.body.append(message);
+  // setTimeout(() => message.remove(), 5000);
+</script>

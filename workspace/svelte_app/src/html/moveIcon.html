@@ -1,0 +1,72 @@
+<html>
+
+<body>
+  <div id="container">
+    <div id="header" class="flame">header</div>
+    <div id="left" class="flame">left</div>
+    <div id="center">
+      <div id="square"></div>
+    </div>
+    <div id="right" class="flame">right</div>
+    <div id="bottom" class="flame">bottom</div>
+  </div>
+</body>
+
+<script>
+  const square = document.getElementById("square");
+  square.addEventListener("click", (e) => {
+    console.log("【ログ: e】", e.target.offsetParent);
+  })
+</script>
+
+</html>
+
+<style>
+  body {
+    margin: 0;
+  }
+
+  #container {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 100px 1fr 100px;
+    grid-template-columns: 150px 1fr 150px;
+    grid-template-areas:
+      "header header header"
+      "left   center right"
+      "bottom bottom bottom"
+
+  }
+
+  /* アイテム */
+  #header {
+    grid-area: header;
+  }
+
+  #left {
+    grid-area: left;
+  }
+
+  #center {
+    grid-area: center;
+    position: relative;
+  }
+
+  #right {
+    grid-area: right;
+  }
+
+  #bottom {
+    grid-area: bottom;
+  }
+
+  .flame {
+    background-color: black;
+  }
+
+  #square {
+    border: solid 5px red;
+    height: 50px;
+    width: 50px;
+  }
+</style>

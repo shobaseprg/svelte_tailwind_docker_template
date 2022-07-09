@@ -1,0 +1,51 @@
+<html>
+
+<body>
+  <div id="parent">
+    <div id="button">ボタン</div>
+    <div id="box">
+      <span id="target">あいうえおかきくけこさしすせそ
+      </span>
+    </div>
+  </div>
+</body>
+
+<script>
+  function consoleRects() {
+    // console.log("【getBoundingClientRect】", target.getBoundingClientRect());
+    console.log("【getBoundingClientRect】", target.getClientRects());
+
+  }
+  button.addEventListener("click", consoleRects);
+</script>
+
+</html>
+
+<style>
+  body {
+    margin: 0;
+  }
+
+  #parent {
+    position: relative;
+    height: 2000px;
+    width: 2000px;
+  }
+
+  #box {
+    position: absolute;
+    top: 120px;
+    left: 130px;
+    height: 100px;
+    width: 100px;
+    border: solid 5px;
+    margin: 5px;
+  }
+
+  #button {
+    position: fixed;
+    border: solid 1px;
+    margin: 5px;
+    z-index: 10;
+  }
+</style>

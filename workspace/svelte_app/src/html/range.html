@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="content">
+    <p id="hoge">ひとつめ<span class="second">ふたつめ</span><b>みっつめはふとじ<span>（こども）</span>だよ</b></p>
+    <p id="fuga">いつつめ<span class="second">むっつめ</span><b>ななつめもふとじ<span>（ななつめのこども）</span>だよ</b></p>
+  </div>
+</body>
+
+</html>
+<script>
+  const hoge = document.getElementById("hoge");
+  // const targetRange = new Range();
+
+  // targetRange.setStart(hoge, 1);
+  // targetRange.setEnd(hoge, 2);
+  // document.getSelection().removeAllRanges();
+  // document.getSelection().addRange(targetRange);
+
+
+  // console.log("【ログ: range】", range);
+  document.addEventListener('mouseup', function (ev) {
+    let sel = document.getSelection()
+    console.log("【ログ: hoge.childNodes[0]】", hoge.childNodes[0]);
+    let r = sel.containsNode(hoge.childNodes[1], true);
+    console.log("【ログ: r】", r);
+  }, false);
+
+</script>
+
+
+
+<style>
+  .second {
+    color: red;
+  }
+
+  b {
+    color: green;
+  }
+
+  b span {
+    color: blue
+  }
+</style>

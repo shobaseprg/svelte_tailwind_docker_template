@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+
+<body>
+  <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
+  <div id="page-header">
+    <a href="../../home.html">HTML HOME</a><span id="btns"></span><span id="mInfo"></span>
+  </div>
+  <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
+  <div id="menu">
+    <button data-a="save">Save</button>
+    <button data-a="load">Load</button>
+    <button data-a="search">Search</button>
+  </div>
+
+  <div>
+    <button data-counter>0</button>
+    <button data-counter>0</button>
+  </div>
+
+  <script>
+    //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+    const mList = [
+      '0:',
+      '1:',
+      '2:',
+      '3:',
+      '4:',
+    ]
+
+    let v = 0, m = mList[0];
+    mInfo.innerText = m
+    mList.forEach((m, i) => {
+      const btn = document.createElement("button");
+      btn.innerText = i;
+      btn.addEventListener("click", () => { v = i; mInfo.innerText = mList[i]; })
+      btns.appendChild(btn);
+    })
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+    class Menu {
+      constructor(elem) {
+        elem.onclick = this.onClick.bind(this);
+      }
+      save() {
+        alert('saving');
+      }
+
+      load() {
+        alert('loading');
+      }
+
+      search() {
+        alert('searching');
+      }
+
+      onClick(event) {
+        let action = event.target.dataset.a;
+        if (action) {
+          this[action]();
+        }
+      };
+    }
+    new Menu(menu);
+
+    document.addEventListener("click", (ev) => {
+
+      if (ev.target.dataset.counter !== undefined) {
+        ev.target.innerText = parseInt(ev.target.innerText) + 1;
+      }
+    })
+
+  </script>
+</body>
+
+</html>
+
+<style>
+  body {
+    margin: 0px;
+  }
+
+  #page-header {
+    background-color: lightblue;
+    padding: 5px;
+  }
+</style>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>test</title>
+</head>
+
+<body>
+
+  <p>あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん</p>
+  <p>あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん</p>
+  <p>あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん</p>
+
+  <script type="text/javascript">
+    document.addEventListener('mouseup', function (ev) {
+      var selection = getSelection();//selectionオブジェクトを取得
+      if (selection.rangeCount > 0) {
+        // ユーザーの選択範囲を取得
+        var range = selection.getRangeAt(0);//選択範囲からrangeオブジェクトを作成
+        sanitize(range);
+        checkNode(document.body, range);
+        // 変化が分かるように選択範囲は消す
+        selection.removeAllRanges();
+      }
+    }, false);
+
+    // 前処理
+    function sanitize(range) {
+      // 開始点がテキストノードの中だったら
+      if (range.startContainer.nodeType == Node.TEXT_NODE) {
+        // テキストノードをRangeの開始点の位置で2つに分ける
+        var latter = range.startContainer.splitText(range.startOffset);
+        // latterには分割された後半部分が入る。
+        // Rangeの開始点をテキストノードの外側にする
+        range.setStartBefore(latter);
+      }
+      // 終了点にも同様の処理
+      if (range.endContainer.nodeType == Node.TEXT_NODE) {
+        var latter = range.endContainer.splitText(range.endOffset);
+        range.setEndBefore(latter);
+      }
+    }
+
+    // メインの関数
+    // nodeは現在調べているノード、rangeは着色したい範囲のRange
+    function checkNode(node, range) {
+      // 新しいRangeを作る
+      var nodeRange = new Range();
+      // nodeRangeの範囲をnodeを囲むように設定
+      nodeRange.selectNode(node);
+
+      if (range.compareBoundaryPoints(Range.START_TO_START, nodeRange) <= 0 &&
+        range.compareBoundaryPoints(Range.END_TO_END, nodeRange) >= 0) {
+        // nodeRangeはrangeに囲まれている
+        // → このノード全体を着色して終わり
+        if (node.nodeType == Node.TEXT_NODE) {
+          // テキストノードの場合はspanで囲む
+          var span = document.createElement('span');
+          // まずspanをテキストノードの直前に設置
+          node.parentNode.insertBefore(span, node);
+          // テキストノードをspanの中に移す
+          span.appendChild(node);
+          span.style.backgroundColor = "#ffff00";
+        } else {
+          // テキストノードでない場合は普通に着色
+          node.style.backgroundColor = "#ffff00";
+        }
+      } else if (range.compareBoundaryPoints(Range.START_TO_END, nodeRange) <= 0 ||
+        range.compareBoundaryPoints(Range.END_TO_START, nodeRange) >= 0) {
+        // nodeRangeとrangeは重なっていない
+        // →このノードをこれ以上調べる必要はない
+        return;
+      } else {
+        // このノードは一部rangeに含まれている
+        for (var i = 0; i < node.childNodes.length; i++) {
+          // 子ノードをひとつずつ調べる
+          checkNode(node.childNodes[i], range);
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

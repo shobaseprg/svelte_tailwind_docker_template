@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>test</title>
+</head>
+
+<body>
+  <table id="aaaaa">
+    <tr>
+      <td>test1</td>
+      <td>test2</td>
+    </tr>
+    <tr>
+      <td>test3</td>
+      <td>test4</td>
+    </tr>
+  </table>
+
+  <script type="text/javascript">
+    var table = document.getElementById('aaaaa');
+
+    var newtr = table.insertRow(table.rows.length);
+
+    for (var i = 0; i < 2; i++) {
+      var newtd = newtr.insertCell(newtr.cells.length);
+      newtd.appendChild(document.createTextNode('testtest' + i));
+    }
+  </script>
+</body>
+
+</html>
