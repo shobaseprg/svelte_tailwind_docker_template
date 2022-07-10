@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+
+<body>
+
+  <div id="menu">
+    <button id="save">セーブ<span>!!</span></button>
+    <button id="load">ロード</button>
+    <button id="search">サーチ</button>
+    <input id="searchForm" hidden />
+  </div>
+  <!--  -->
+  <button id="register">登録</button>
+
+  <script>
+
+    function buttonAction(ev) {
+      const btn = ev.target.closest('button');
+
+      switch (btn.id) {
+        case "save":
+          alert("セーブしました。");
+          break;
+        case "load":
+          alert("ロードしました。");
+          break;
+        case "search":
+          searchForm.hidden = !searchForm.hidden
+          break;
+        case "register":
+          alert("登録しました");
+          break;
+        default:
+          alert("どのボタンでもありません");
+          break;
+      }
+    }
+
+    document.addEventListener("click", (ev) => { buttonAction(ev) });
+  </script>
+</body>
+
+</html>
+
+<style>
+  body {
+    background-color: gray;
+  }
+
+  #menu {
+    display: flex;
+    width: 400px;
+    justify-content: space-between;
+  }
+</style>
