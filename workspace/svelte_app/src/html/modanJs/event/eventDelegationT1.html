@@ -48,6 +48,7 @@
     <script>
       container.addEventListener('click', (ev) => {
         if (ev.target.dataset.btn !== undefined) {
+
           const pane = ev.target.closest(".pane");
           pane.style.display = "none";
         }
