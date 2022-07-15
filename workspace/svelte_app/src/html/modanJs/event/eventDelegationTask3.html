@@ -2,38 +2,16 @@
 <html>
 
 <body>
-  <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
-  <div id="page-header">
-    <a href="../../home.html">HTML HOME</a><span id="btns"></span><span id="mInfo"></span>
+  <div id="flame">
+    <div id="outer">
+      <div id="inner">
+        <button class="btn" data-tooltip="the tooltip is longer than the element">Short button</button>
+        <button class="btn" data-tooltip="HTML<br>tooltip">One more button</button>
+      </div>
+    </div>
   </div>
-  <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
-
-  <p>LaLaLa LaLaLa LaLaLa LaLaLa LaLaLa LaLaLa LaLaLa LaLaLa LaLaLa</p>
-  <p>LaLaLa LaLaLa LaLaLa LaLaLa LaLaLa LaLaLa LaLaLa LaLaLa LaLaLa</p>
-
-  <button data-tooltip="the tooltip is longer than the element">Short button</button>
-  <button data-tooltip="HTML<br>tooltip">One more button</button>
-
   <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ script ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
   <script>
-    //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-    const mList = [
-      '0:',
-      '1:',
-      '2:',
-      '3:',
-      '4:',
-    ]
-
-    let v = 0, m = mList[0];
-    mInfo.innerText = m
-    mList.forEach((m, i) => {
-      const btn = document.createElement("button");
-      btn.innerText = i;
-      btn.addEventListener("click", () => { v = i; mInfo.innerText = mList[i]; })
-      btns.appendChild(btn);
-    })
-    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
     let tooltipElem;
 
     document.addEventListener("mouseover", (ev) => {
@@ -41,16 +19,29 @@
       tooltipElem = document.createElement('div');
       tooltipElem.className = "tooltip"
       tooltipElem.innerText = ev.target.dataset.tooltip
-      document.body.append(tooltipElem);
+      inner.append(tooltipElem);
+
+      // let cords = ev.target.getBoundingClientRect();
+      // // coords.left:画面端からの距離
+      // // target.offsetWidthは横幅
+      // // tooltipElem.offsetWidthはツールチップの幅
+      // const leftSpaceFromLeftEdgeOfTarget = cords.left;
+      // if (leftSpaceFromLeftEdgeOfTarget < 0) {
+      //   toolLeft = 0
+      // } else {
+
+      // }
+
+      // const leftDiffTooltipAndTarget = (target.offsetWidth / 2) - (tooltipElem.offsetWidth / 2)
+
+      // let left = coords.left + (target.offsetWidth - tooltipElem.offsetWidth) / 2;
     })
 
     document.onmouseout = function (e) {
-
       if (tooltipElem) {
         tooltipElem.remove();
         tooltipElem = null;
       }
-
     };
   </script>
 </body>
@@ -66,12 +57,9 @@
 
   body {
     margin: 0px;
-    height: 2000px;
-    /* make body scrollable, the tooltip should work after the scroll */
   }
 
   .tooltip {
-    /* some styles for the tooltip, you can use your own instead */
     position: fixed;
     padding: 10px 20px;
     border: 1px solid #b3c9ce;
@@ -81,5 +69,29 @@
     color: #333;
     background: #fff;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
+  }
+
+  #flame {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #outer {
+    border: solid 1px;
+    width: 500px;
+    height: 500px;
+    overflow: scroll
+  }
+
+  #inner {
+    width: 1000px;
+    height: 1000px;
+  }
+
+  .btn {
+    margin: 70px;
   }
 </style>
