@@ -61,7 +61,13 @@
             tooltipElem.style.top = "10px";
           }
         } else if (isRightOverhang(buttonRight)) {
-          console.log("【ログ: みぎに見切れてるよ】is Run");
+          if (isButtonDistanceThanDiff(diff, buttonRight)) {//差分の方が小さい場合
+            tooltipElem.style.right = "0px";
+            tooltipElem.style.top = "10px";
+          } else {//差分の方が大きい場合
+            tooltipElem.style.right = `${Math.abs(diff) - Math.abs(buttonRight)}px`;
+            tooltipElem.style.top = "10px";
+          }
         }
         if (!isLeftOverhang(buttonLeft) && !isRightOverhang((buttonRight))) {//見切れがない場合
           const tooltipLeft = buttonLeft + diff;
