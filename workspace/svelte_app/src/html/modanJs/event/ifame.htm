@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="inner">
+    <button class="btn" data-tooltip="sbtn">short button !!</button>
+    <button class="btn" data-tooltip="long message tooltip--------------------------">long button !!</button>
+  </div>
+
+  <script>
+    let tooltipElem;
+
+    function createTooltip(message) {
+
+    }
+
+    function isLeftOverhang(buttonLeft) {
+      return buttonLeft < 0
+    }
+
+    function isRightOverhang(buttonRight) {
+      return buttonRight > 600
+    }
+
+    function isButtonDistanceThanDiff(diff, horizontalButtonSpace) {
+      return Math.abs(horizontalButtonSpace) - Math.abs(diff) >= 0
+    }
+
+    document.addEventListener("mouseover", (ev) => {
+      if (ev.target.tagName !== "BUTTON") return
+
+      const overButton = ev.target;
+
+      tooltipElem = document.createElement('div');
+
+      tooltipElem.innerText = overButton.dataset.tooltip;
+      tooltipElem.className = "tooltip"
+      document.body.append(tooltipElem);
+      console.dir(tooltipElem);
+      console.log(tooltipElem.clientWidth);
+
+
+      let buttonRect = ev.target.getBoundingClientRect();
+
+      const buttonWidth = overButton.offsetWidth;
+      const buttonLeft = buttonRect.left;
+      const buttonRight = buttonRect.right;
+      const tooltipWidth = tooltipElem.offsetWidth
+
+
+      const diff = (buttonWidth - tooltipWidth) / 2;
+      // console.log("【ログ:buttonWidth 】", buttonWidth);
+
+      if (diff > 0) { //ツールチップが小さい場合
+        // console.log("【ログ: ツールチップ小さい】is Run");
+        if (isLeftOverhang(buttonLeft)) { //左に見切れている場合
+          if (isButtonDistanceThanDiff(diff, buttonLeft)) {//差分の方が小さい場合
+            tooltipElem.style.left = "0px";
+            tooltipElem.style.top = "10px";
+          } else {
+            tooltipElem.style.left = `${Math.abs(diff) - Math.abs(buttonLeft)}px`;
+            tooltipElem.style.top = "10px";
+          }
+        }
+        if (!isLeftOverhang(buttonLeft) && !isRightOverhang(buttonRight)) {//見切れがない場合
+          const tooltipLeft = buttonLeft + diff;
+          tooltipElem.style.left = `${tooltipLeft}px`;
+          tooltipElem.style.top = "10px";
+        }
+      } else {
+        console.log("【ログ: でかいよ】is Run");
+      }
+    })
+
+    document.onmouseout = function (e) {
+      if (tooltipElem) {
+        tooltipElem.remove();
+        tooltipElem = null;
+      }
+    };
+  </script>
+</body>
+
+<style>
+  #page-header {
+    background-color: lightblue;
+    padding: 5px;
+  }
+
+  body {
+    width: 600px;
+    height: 300px;
+    background-color: red;
+  }
+
+  .tooltip {
+    position: fixed;
+    padding: 3px;
+    border: 1px solid #b3c9ce;
+    border-radius: 4px;
+    text-align: center;
+    color: #333;
+    background: #fff;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
+  }
+
+  #inner {
+    width: 1500px;
+    height: 700px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .btn {
+    margin: 70px;
+  }
+</style>
+
+
+</html>

@@ -2,96 +2,15 @@
 <html>
 
 <body>
-  <div id="flame">
-    <div id="outer">
-      <div id="inner">
-        <button class="btn" data-tooltip="the tooltip is longer than the element">Short button</button>
-        <button class="btn" data-tooltip="HTML<br>tooltip">One more button</button>
-      </div>
-    </div>
-  </div>
-  <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ script ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
-  <script>
-    let tooltipElem;
-
-    document.addEventListener("mouseover", (ev) => {
-      if (!ev.target.dataset.tooltip) return
-      tooltipElem = document.createElement('div');
-      tooltipElem.className = "tooltip"
-      tooltipElem.innerText = ev.target.dataset.tooltip
-      inner.append(tooltipElem);
-
-      // let cords = ev.target.getBoundingClientRect();
-      // // coords.left:画面端からの距離
-      // // target.offsetWidthは横幅
-      // // tooltipElem.offsetWidthはツールチップの幅
-      // const leftSpaceFromLeftEdgeOfTarget = cords.left;
-      // if (leftSpaceFromLeftEdgeOfTarget < 0) {
-      //   toolLeft = 0
-      // } else {
-
-      // }
-
-      // const leftDiffTooltipAndTarget = (target.offsetWidth / 2) - (tooltipElem.offsetWidth / 2)
-
-      // let left = coords.left + (target.offsetWidth - tooltipElem.offsetWidth) / 2;
-    })
-
-    document.onmouseout = function (e) {
-      if (tooltipElem) {
-        tooltipElem.remove();
-        tooltipElem = null;
-      }
-    };
-  </script>
+  <iframe id="flame" src="./ifame.htm">
+  </iframe>
 </body>
 
-</html>
-
-
 <style>
-  #page-header {
-    background-color: lightblue;
-    padding: 5px;
-  }
-
-  body {
-    margin: 0px;
-  }
-
-  .tooltip {
-    position: fixed;
-    padding: 10px 20px;
-    border: 1px solid #b3c9ce;
-    border-radius: 4px;
-    text-align: center;
-    font: italic 14px/1.3 sans-serif;
-    color: #333;
-    background: #fff;
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
-  }
-
   #flame {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #outer {
-    border: solid 1px;
-    width: 500px;
-    height: 500px;
-    overflow: scroll
-  }
-
-  #inner {
-    width: 1000px;
-    height: 1000px;
-  }
-
-  .btn {
-    margin: 70px;
+    width: 600px;
+    height: 300px;
   }
 </style>
+
+</html>
