@@ -18,7 +18,10 @@
     let tooltipElem;
 
     function createTooltip(message) {
-
+      tooltipElem = document.createElement('div');
+      tooltipElem.innerText = message;
+      tooltipElem.className = "tooltip"
+      document.body.append(tooltipElem);
     }
 
     function isLeftOverhang(buttonLeft) {
@@ -38,38 +41,29 @@
 
       const overButton = ev.target;
 
-      tooltipElem = document.createElement('div');
+      createTooltip(overButton.dataset.tooltip)
 
-      tooltipElem.innerText = overButton.dataset.tooltip;
-      tooltipElem.className = "tooltip"
-      document.body.append(tooltipElem);
-      console.dir(tooltipElem);
-      console.log(tooltipElem.clientWidth);
-
-
-      let buttonRect = ev.target.getBoundingClientRect();
-
-      const buttonWidth = overButton.offsetWidth;
+      const buttonRect = overButton.getBoundingClientRect();
       const buttonLeft = buttonRect.left;
       const buttonRight = buttonRect.right;
-      const tooltipWidth = tooltipElem.offsetWidth
-
+      const buttonWidth = overButton.offsetWidth;
+      const tooltipWidth = tooltipElem.offsetWidth;
 
       const diff = (buttonWidth - tooltipWidth) / 2;
-      // console.log("【ログ:buttonWidth 】", buttonWidth);
 
       if (diff > 0) { //ツールチップが小さい場合
-        // console.log("【ログ: ツールチップ小さい】is Run");
         if (isLeftOverhang(buttonLeft)) { //左に見切れている場合
           if (isButtonDistanceThanDiff(diff, buttonLeft)) {//差分の方が小さい場合
             tooltipElem.style.left = "0px";
             tooltipElem.style.top = "10px";
-          } else {
+          } else {//差分の方が大きい場合
             tooltipElem.style.left = `${Math.abs(diff) - Math.abs(buttonLeft)}px`;
             tooltipElem.style.top = "10px";
           }
+        } else if (isRightOverhang(buttonRight)) {
+          console.log("【ログ: みぎに見切れてるよ】is Run");
         }
-        if (!isLeftOverhang(buttonLeft) && !isRightOverhang(buttonRight)) {//見切れがない場合
+        if (!isLeftOverhang(buttonLeft) && !isRightOverhang((buttonRight))) {//見切れがない場合
           const tooltipLeft = buttonLeft + diff;
           tooltipElem.style.left = `${tooltipLeft}px`;
           tooltipElem.style.top = "10px";
