@@ -11,9 +11,8 @@
 <body>
   <div id="inner">
     <button class="btn" data-tooltip="sbtn">short button !!</button>
-    <button class="btn" data-tooltip="long message tooltip--------------------------">long button !!</button>
+    <button class="btn" data-tooltip="long message tooltip long message tooltip">long button !!</button>
   </div>
-
   <script>
     let tooltipElem;
 
@@ -24,20 +23,17 @@
       document.body.append(tooltipElem);
     }
 
-    function isLeftOverhang(buttonLeft) {
-      return buttonLeft < 0
+    function setTop(buttonRect, tooltipRect) {
+      if (tooltipRect.height >= buttonRect.top) {//上にスペースがない場合
+        tooltipElem.style.top = `${buttonRect.bottom}px`
+      } else {
+        tooltipElem.style.top = `${buttonRect.top - tooltipRect.height}px`
+      }
     }
 
-    function isRightOverhang(buttonRight) {
-      return buttonRight > 600
-    }
-
-    function isButtonDistanceThanDiff(diff, horizontalButtonSpace) {
-      return Math.abs(horizontalButtonSpace) - Math.abs(diff) >= 0
-    }
-
-    function getButtonRect(buttonRect) {
-
+    function setHorizontalCenter(buttonRect, buttonBaseDiff) {
+      const tooltipLeft = buttonRect.left + buttonBaseDiff;
+      tooltipElem.style.left = `${tooltipLeft}px`;
     }
 
     document.addEventListener("mouseover", (ev) => {
@@ -48,40 +44,42 @@
       createTooltip(overButton.dataset.tooltip)
 
       const buttonRect = overButton.getBoundingClientRect();
-      const tooltipWidth = tooltipElem.offsetWidth;
+      const tooltipRect = tooltipElem.getBoundingClientRect();
 
-      const diff = (buttonRect.width - tooltipWidth) / 2;
+      const buttonBaseDiff = (buttonRect.width - tooltipRect.width) / 2;
 
-      if (diff > 0) { //ツールチップが小さい場合
+      setTop(buttonRect, tooltipRect);
+
+
+      //横位置
+      if (buttonBaseDiff > 0) { //ツールチップが小さい場合
         // 左右の位置
-        if (isLeftOverhang(buttonRect.left)) { //左に見切れている場合
-          if (isButtonDistanceThanDiff(diff, buttonRect.left)) {//差分の方が小さい場合
+        if (buttonRect.left < 0) { //左に見切れている場合
+          if (Math.abs(buttonRect.left) - Math.abs(buttonBaseDiff) >= 0) {//差分の方が小さい場合
             tooltipElem.style.left = "0px";
           } else {//差分の方が大きい場合
-            tooltipElem.style.left = `${Math.abs(diff) - Math.abs(buttonRect.left)}px`;
+            tooltipElem.style.left = `${Math.abs(buttonBaseDiff) - Math.abs(buttonRect.left)}px`;
           }
-        } else if (isRightOverhang(buttonRect.right)) { //右に見切れている場合
-          if (isButtonDistanceThanDiff(diff, buttonRect.right)) {//差分の方が小さい場合
+        } else if (buttonRect.right > document.body.clientWidth) { //右に見切れている場合
+          if (Math.abs(buttonRect.left) - Math.abs(buttonBaseDiff) >= 0) {//差分の方が小さい場合
             tooltipElem.style.right = "0px";
           } else {//差分の方が大きい場合
-            tooltipElem.style.right = `${Math.abs(diff) - Math.abs(buttonRect.right)}px`;
+            tooltipElem.style.right = `${Math.abs(buttonBaseDiff) - Math.abs(buttonRect.right)}px`;
           }
         }
         else {//見切れがない場合
-          const tooltipLeft = buttonRect.left + diff;
-          tooltipElem.style.left = `${tooltipLeft}px`;
+          setHorizontalCenter(buttonRect, buttonBaseDiff);
         }
-
-
-        if (tooltipElem.offsetHeight >= buttonRect.top) {//上にスペースがない場合
-          tooltipElem.style.top = `${buttonRect.bottom}px`
-        } else {
-          tooltipElem.style.top = `${buttonRect.top - tooltipElem.offsetHeight}px`
-        }
-
-
       } else {//ツールチップが大きい場合
-        console.log("【ログ: でかいよ】is Run");
+        if (buttonRect.left < 0 || (Math.abs(buttonBaseDiff) > buttonRect.left)) {//ボタンが左に見切れる場合、またはツールチップが左に見切れる場合
+
+          tooltipElem.style.left = "0px"
+        } else if (buttonRect.right >= document.body.clientWidth || buttonRect.right + Math.abs(buttonBaseDiff) >= document.body.clientWidth) {//ボタンが右に見切れる場合、またはツールチップが右に見切れる場合
+
+          tooltipElem.style.right = "0px"
+        } else {//ツールチップが見切れない場合
+          setHorizontalCenter(buttonRect, buttonBaseDiff);
+        }
       }
     })
 
@@ -98,7 +96,6 @@
   body {
     width: 600px;
     height: 300px;
-    background-color: red;
   }
 
   .tooltip {
