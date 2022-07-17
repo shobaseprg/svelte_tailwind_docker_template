@@ -36,6 +36,10 @@
       return Math.abs(horizontalButtonSpace) - Math.abs(diff) >= 0
     }
 
+    function getButtonRect(buttonRect) {
+
+    }
+
     document.addEventListener("mouseover", (ev) => {
       if (ev.target.tagName !== "BUTTON") return
 
@@ -44,37 +48,39 @@
       createTooltip(overButton.dataset.tooltip)
 
       const buttonRect = overButton.getBoundingClientRect();
-      const buttonLeft = buttonRect.left;
-      const buttonRight = buttonRect.right;
-      const buttonWidth = overButton.offsetWidth;
       const tooltipWidth = tooltipElem.offsetWidth;
 
-      const diff = (buttonWidth - tooltipWidth) / 2;
+      const diff = (buttonRect.width - tooltipWidth) / 2;
 
       if (diff > 0) { //ツールチップが小さい場合
-        if (isLeftOverhang(buttonLeft)) { //左に見切れている場合
-          if (isButtonDistanceThanDiff(diff, buttonLeft)) {//差分の方が小さい場合
+        // 左右の位置
+        if (isLeftOverhang(buttonRect.left)) { //左に見切れている場合
+          if (isButtonDistanceThanDiff(diff, buttonRect.left)) {//差分の方が小さい場合
             tooltipElem.style.left = "0px";
-            tooltipElem.style.top = "10px";
           } else {//差分の方が大きい場合
-            tooltipElem.style.left = `${Math.abs(diff) - Math.abs(buttonLeft)}px`;
-            tooltipElem.style.top = "10px";
+            tooltipElem.style.left = `${Math.abs(diff) - Math.abs(buttonRect.left)}px`;
           }
-        } else if (isRightOverhang(buttonRight)) {
-          if (isButtonDistanceThanDiff(diff, buttonRight)) {//差分の方が小さい場合
+        } else if (isRightOverhang(buttonRect.right)) { //右に見切れている場合
+          if (isButtonDistanceThanDiff(diff, buttonRect.right)) {//差分の方が小さい場合
             tooltipElem.style.right = "0px";
-            tooltipElem.style.top = "10px";
           } else {//差分の方が大きい場合
-            tooltipElem.style.right = `${Math.abs(diff) - Math.abs(buttonRight)}px`;
-            tooltipElem.style.top = "10px";
+            tooltipElem.style.right = `${Math.abs(diff) - Math.abs(buttonRect.right)}px`;
           }
         }
-        if (!isLeftOverhang(buttonLeft) && !isRightOverhang((buttonRight))) {//見切れがない場合
-          const tooltipLeft = buttonLeft + diff;
+        else {//見切れがない場合
+          const tooltipLeft = buttonRect.left + diff;
           tooltipElem.style.left = `${tooltipLeft}px`;
-          tooltipElem.style.top = "10px";
         }
-      } else {
+
+
+        if (tooltipElem.offsetHeight >= buttonRect.top) {//上にスペースがない場合
+          tooltipElem.style.top = `${buttonRect.bottom}px`
+        } else {
+          tooltipElem.style.top = `${buttonRect.top - tooltipElem.offsetHeight}px`
+        }
+
+
+      } else {//ツールチップが大きい場合
         console.log("【ログ: でかいよ】is Run");
       }
     })
@@ -89,11 +95,6 @@
 </body>
 
 <style>
-  #page-header {
-    background-color: lightblue;
-    padding: 5px;
-  }
-
   body {
     width: 600px;
     height: 300px;
