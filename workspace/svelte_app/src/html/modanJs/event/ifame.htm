@@ -31,18 +31,24 @@
       }
     }
 
-    function setLeft(buttonRect, buttonBaseDiff) {
-      if (buttonRect.left + buttonBaseDiff < 0) {
-        tooltipElem.style.left = "0px";
-        return;
-      }
+    function setLeft(buttonRect, buttonBaseDiff, tooltipRect) {
+      maxRightLeft = document.documentElement.clientWidth - tooltipRect.width;
+      leftLength = Math.max(0, buttonRect.left + buttonBaseDiff);
 
-      if (buttonRect.right - buttonBaseDiff > document.body.clientWidth) {
-        tooltipElem.style.right = "0px";
-        return;
-      }
-      tooltipElem.style.left = `${buttonRect.left + buttonBaseDiff}px`;
+      tooltipElem.style.left = `${Math.min(maxRightLeft, leftLength)}px`;
+
+      // if (buttonRect.left + buttonBaseDiff < 0) {
+      //   tooltipElem.style.left = "0px";
+      //   return;
+      // }
+
+      // if (buttonRect.right - buttonBaseDiff > document.body.clientWidth) {
+      //   tooltipElem.style.right = "0px";
+      //   return;
+      // }
+      // tooltipElem.style.left = `${buttonRect.left + buttonBaseDiff}px`;
     }
+    // tooltipElem.style.left = `${Math.min(document.documentElement.clientWidth - tooltipRect.width, Math.max(0, buttonRect.left + buttonBaseDiff))}px`;
 
     document.addEventListener("mouseover", (ev) => {
       if (ev.target.tagName !== "BUTTON") return;
@@ -57,7 +63,7 @@
       const buttonBaseDiff = (buttonRect.width - tooltipRect.width) / 2;
 
       setTop(buttonRect, tooltipRect);
-      setLeft(buttonRect, buttonBaseDiff);
+      setLeft(buttonRect, buttonBaseDiff, tooltipRect);
     })
 
     function removeToolTip() {
