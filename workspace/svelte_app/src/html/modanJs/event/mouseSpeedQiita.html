@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+
+<body>
+  <button id="btn">ボタン</button>
+  <div id="tooltip" class="hidden">Tooltip</div>
+
+  <script>
+
+    class HoverIntent {
+      constructor(
+        elem,
+        actionOnSlowlyMove,
+        actionOnLeave,
+        baseDistance = 30,
+        interval = 50,
+      ) {
+        this.elem = elem;
+        this.actionOnSlowlyMove = actionOnSlowlyMove;
+        this.actionOnLeave = actionOnLeave;
+        this.baseDistance = baseDistance;
+        this.interval = interval;
+        this.trackDistance = this.trackDistance.bind(this);
+        this.onMouseOver = this.onMouseOver.bind(this);
+        this.onMouseMove = this.onMouseMove.bind(this);
+        this.onMouseOut = this.onMouseOut.bind(this);
+
+        this.elem.addEventListener("mouseover", this.onMouseOver);
+        this.elem.addEventListener("mouseout", this.onMouseOut);
+      }
+
+      trackDistance() {
+        // マウスの距離を計測する処理
+        // let distance;//一定時間毎のマウスの移動距離
+
+        // // distance = Math.sqrt(
+        // //   Math.pow(this.prevX - this.lastX, 2) +
+        // //   Math.pow(this.prevY - this.lastY, 2)
+        // // )
+        // if (distance < this.baseDistance) {
+        //   // ゆっくり移動した場合の処理
+        //   // clearInterval(this.checkDistanceInterval);
+        //   // this.isSlowHover = true;
+        //   this.actionOnSlowlyMove();
+        // } else {
+        //   //素早く移動した場合の処理
+        //   // this.prevX = this.lastX;
+        //   // this.prevY = this.lastY;
+        // }
+      }
+
+      onMouseOver(event) {
+        //マウスがボタン状に乗った時の処理
+        // this.prevX = event.pageX;
+        // this.prevY = event.pageY;
+
+        this.elem.addEventListener("mousemove", this.onMouseMove);
+        // this.checkDistanceInterval = setInterval(this.trackDistance, this.interval);
+      }
+
+      onMouseMove(event) {
+        //マウスがボタン上で動いた場合の処理
+        // this.lastX = event.pageX;
+        // this.lastY = event.pageY;
+      }
+
+      onMouseOut() {
+        // マウスがボタンからハスれた時の処理
+        this.elem.removeEventListener("mousemove", this.onMouseMove);
+        // clearInterval(this.checkDistanceInterval);
+        // if (this.isSlowHover) {
+        //   this.actionOnLeave();
+        //   this.isSlowHover = false;
+        // }
+      }
+    }
+
+    const tt = document.getElementById("tooltip");
+    const btn = document.getElementById("btn");
+
+    new HoverIntent(
+      btn,
+      () => { tt.classList.remove("hidden") },//乗った時の関数
+      () => { tt.classList.add("hidden") }//外れた時の関数
+    )
+
+  </script>
+</body>
+
+</html>
+<style>
+  body {
+    margin: 0px;
+  }
+
+  button {
+    margin-left: 100px;
+    margin-top: 100px;
+    padding: 10px 50px;
+  }
+
+  #tooltip {
+    margin-left: 100px;
+    width: 100px;
+    border: solid 1px gray;
+    border-radius: 3px;
+    text-align: center;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>

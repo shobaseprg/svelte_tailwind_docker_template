@@ -1,0 +1,237 @@
+<!DOCTYPE HTML>
+<html>
+
+<body>
+
+  <div id="page-header">
+    <a href="../../home.html">HOME</a><span>マウスオーバー</span><span id="btns"></span><span id="mInfo"></span>
+  </div>
+  <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
+  <div>aaaaaaaaaa</div>
+  <div id="b">bbbbbbbbbb</div>
+
+  <table id="table">
+    <tr>
+      <th colspan="3"><em>Bagua</em> Chart: Direction, Element, Color, Meaning</th>
+    </tr>
+    <tr>
+      <td class="nw"><strong>Northwest</strong>
+        <br>Metal
+      </td>
+      <td class="n"><strong>North</strong>
+        <br>Water
+      </td>
+      <td class="ne"><strong>Northeast</strong>
+        <br>Earth
+      </td>
+    </tr>
+    <tr>
+      <td class="w"><strong>West</strong>
+        <br>Metal
+      </td>
+      <td class="c"><strong>Center</strong>
+        <br>All
+      </td>
+      <td class="e"><strong>East</strong>
+        <br>Wood
+      </td>
+    </tr>
+    <tr>
+      <td class="sw"><strong>Southwest</strong>
+        <br>Earth
+      </td>
+      <td class="s"><strong>South</strong>
+        <br>Fire
+      </td>
+      <td class="se"><strong>Southeast</strong>
+        <br>Wood
+      </td>
+    </tr>
+
+  </table>
+
+  <textarea id="text"></textarea>
+
+  <input type="button" onclick="text.value=''" value="Clear">
+
+  <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
+
+  <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ script ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
+  <script>
+    const mList = [
+      '0:子要素がピンクになる',
+      '1:tdがピンクになる',
+      '2:',
+      '3:',
+      '4:',
+    ]
+
+
+    let v = 0, m = mList[0];
+    mInfo.innerText = m
+    mList.forEach((m, i) => {
+      const btn = document.createElement("button");
+      btn.innerText = i;
+      btn.addEventListener("click", () => {
+        v = i;
+        mInfo.innerText = mList[i];
+        addEvent()
+      })
+      btns.appendChild(btn);
+    })
+    //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+    const b = document.getElementById("b");
+    b.addEventListener("mouseover", (e) => {
+    })
+
+    const text = document.getElementById("text");
+
+    function addEvent() {
+      table.onmouseover = null;
+      table.onmouseout = null;
+
+      if (v === 0) {
+        table.onmouseover = function (event) {
+          let target = event.target;
+          target.style.background = 'pink';
+          text.value += "mouseover " + target.tagName + "\n";
+          text.scrollTop = text.scrollHeight;
+        };
+
+        table.onmouseout = function (event) {
+          let target = event.target;
+          target.style.background = '';
+          text.value += "mouseout " + target.tagName + "\n";
+          text.scrollTop = text.scrollHeight;
+        };
+
+      } else if (v === 1) {
+        let currentElem = null;
+
+        table.onmouseover = function (event) {
+          console.log("【ログ: currentElem】", currentElem);
+          if (currentElem) {
+            //currentElemには最後にoverしたtdが入っている。現在td要素にいなければnull
+            //つまり現在まだtd内であれば何も処理しない。
+            return;
+          }
+
+          let target = event.target.closest('td');
+          if (!target || !table.contains(target)) return;
+
+          currentElem = target;
+          target.style.background = 'pink';
+        };
+
+        table.onmouseout = function (event) {
+          if (!currentElem) return;
+          // td要素内でなければ処理不要
+
+          let relatedTarget = event.relatedTarget;//移動元
+          if (relatedTarget) {
+            while (relatedTarget) {
+              if (relatedTarget == currentElem) return;//つまりまだtdないにいる場合は処理終了
+              relatedTarget = relatedTarget.parentNode;
+            }
+          }
+
+          //tdないにいない場合、つまりtdから抜けた場合は色を抜く。
+          currentElem.style.background = '';
+          currentElem = null;
+        };
+
+      }
+    }
+
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+  </script>
+</body>
+
+</html>
+
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ style ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
+<style>
+  body {
+    margin: 0px;
+  }
+
+  #page-header {
+    background-color: lightblue;
+    padding: 5px;
+  }
+
+  #text {
+    display: block;
+    height: 100px;
+    width: 456px;
+  }
+
+  #table th {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  #table td {
+    width: 150px;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: bottom;
+    padding-top: 5px;
+    padding-bottom: 12px;
+  }
+
+  #table .nw {
+    background: #999;
+  }
+
+  #table .n {
+    background: #03f;
+    color: #fff;
+  }
+
+  #table .ne {
+    background: #ff6;
+  }
+
+  #table .w {
+    background: #ff0;
+  }
+
+  #table .c {
+    background: #60c;
+    color: #fff;
+  }
+
+  #table .e {
+    background: #09f;
+    color: #fff;
+  }
+
+  #table .sw {
+    background: #963;
+    color: #fff;
+  }
+
+  #table .s {
+    background: #f60;
+    color: #fff;
+  }
+
+  #table .se {
+    background: #0c3;
+    color: #fff;
+  }
+
+  #table .highlight {
+    background: red;
+  }
+
+  #text {
+    height: 300px;
+  }
+
+  /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
+
+  /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+</style>

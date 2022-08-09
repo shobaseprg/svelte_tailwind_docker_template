@@ -4,11 +4,23 @@
 <body>
 
   <div id="page-header">
-    <a href="toHomeLinkPath">HOME</a><span>pageTitle</span><span id="btns"></span><span id="mInfo"></span>
+    <a href="../../home.html">HOME</a><span>マウスイベント</span><span id="btns"></span><span id="mInfo"></span>
   </div>
   <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
 
-  <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
+  Click on a list item to select it.
+  <br>
+
+  <ul id="ul">
+    <li>Christopher Robin</li>
+    <li>Winnie-the-Pooh</li>
+    <li>Tigger</li>
+    <li>Kanga</li>
+    <li>Rabbit. Just rabbit.</li>
+  </ul> <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
+
+  <div id="menu" class="non">
+  </div>
 
   <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ script ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
   <script>
@@ -29,7 +41,29 @@
       btns.appendChild(btn);
     })
     //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+    document.addEventListener("click", (e) => {
+      if (e.target.tagName !== 'LI') return;
 
+      if (!e.ctrlKey && !e.metaKey) {
+        const lis = document.querySelectorAll("li")
+        lis.forEach((li) => {
+          li.classList.remove("selected")
+        }
+        )
+      }
+      e.target.classList.toggle("selected");
+    })
+
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault()
+      const menu = document.getElementById("menu");
+      console.log("【ログ: e.clienX】", e.clientX);
+      menu.style.left = `${e.clientX}px`;
+      menu.style.top = `${e.clientY}px`;
+      menu.classList.toggle("non");
+
+
+    })
     // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
   </script>
 </body>
@@ -45,6 +79,25 @@
   #page-header {
     background-color: lightblue;
     padding: 5px;
+  }
+
+  .selected {
+    background: #0f0;
+  }
+
+  li {
+    cursor: pointer;
+  }
+
+  #menu {
+    border: solid 12px;
+    width: 50px;
+    height: 50px;
+    position: fixed;
+  }
+
+  .non {
+    display: none;
   }
 
   /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
