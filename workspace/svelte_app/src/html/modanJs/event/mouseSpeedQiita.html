@@ -30,48 +30,42 @@
       }
 
       trackDistance() {
-        // マウスの距離を計測する処理
-        // let distance;//一定時間毎のマウスの移動距離
+        let distance;
 
-        // // distance = Math.sqrt(
-        // //   Math.pow(this.prevX - this.lastX, 2) +
-        // //   Math.pow(this.prevY - this.lastY, 2)
-        // // )
-        // if (distance < this.baseDistance) {
-        //   // ゆっくり移動した場合の処理
-        //   // clearInterval(this.checkDistanceInterval);
-        //   // this.isSlowHover = true;
-        //   this.actionOnSlowlyMove();
-        // } else {
-        //   //素早く移動した場合の処理
-        //   // this.prevX = this.lastX;
-        //   // this.prevY = this.lastY;
-        // }
+        distance = Math.sqrt(
+          Math.pow(this.prevX - this.lastX, 2) +
+          Math.pow(this.prevY - this.lastY, 2)
+        )
+        if (distance < this.baseDistance) {
+          clearInterval(this.checkDistanceInterval);
+          this.isSlowHover = true;
+          this.actionOnSlowlyMove();
+        } else {
+          this.prevX = this.lastX;
+          this.prevY = this.lastY;
+        }
       }
 
       onMouseOver(event) {
-        //マウスがボタン状に乗った時の処理
-        // this.prevX = event.pageX;
-        // this.prevY = event.pageY;
+        this.prevX = event.pageX;
+        this.prevY = event.pageY;
 
         this.elem.addEventListener("mousemove", this.onMouseMove);
-        // this.checkDistanceInterval = setInterval(this.trackDistance, this.interval);
+        this.checkDistanceInterval = setInterval(this.trackDistance, this.interval);
       }
 
       onMouseMove(event) {
-        //マウスがボタン上で動いた場合の処理
-        // this.lastX = event.pageX;
-        // this.lastY = event.pageY;
+        this.lastX = event.pageX;
+        this.lastY = event.pageY;
       }
 
       onMouseOut() {
-        // マウスがボタンからハスれた時の処理
         this.elem.removeEventListener("mousemove", this.onMouseMove);
-        // clearInterval(this.checkDistanceInterval);
-        // if (this.isSlowHover) {
-        //   this.actionOnLeave();
-        //   this.isSlowHover = false;
-        // }
+        clearInterval(this.checkDistanceInterval);
+        if (this.isSlowHover) {
+          this.actionOnLeave();
+          this.isSlowHover = false;
+        }
       }
     }
 
@@ -80,10 +74,9 @@
 
     new HoverIntent(
       btn,
-      () => { tt.classList.remove("hidden") },//乗った時の関数
-      () => { tt.classList.add("hidden") }//外れた時の関数
+      () => { tt.classList.remove("hidden") },
+      () => { tt.classList.add("hidden") }
     )
-
   </script>
 </body>
 
@@ -110,4 +103,5 @@
   .hidden {
     display: none;
   }
+
 </style>
