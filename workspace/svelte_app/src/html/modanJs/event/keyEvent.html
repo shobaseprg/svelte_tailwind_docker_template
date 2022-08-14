@@ -4,17 +4,10 @@
 <body>
 
   <div id="page-header">
-    <a href="toHomeLinkPath">HOME</a><span>pageTitle</span><span id="btns"></span><span id="mInfo"></span>
+    <a href="../../home.html">HOME</a><span>キーイベント</span><span id="btns"></span><span id="mInfo"></span>
   </div>
   <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mybody▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
-  <div id="wrap">
-    <section>0</section>
-    <section hidden>1</section>
-    <section hidden>2</section>
-    <section hidden>3</section>
-    <section hidden>4</section>
-
-  </div>
+  <p>Press "Q" and "W" together (can be in any language).</p>
   <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
 
   <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ script ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
@@ -32,44 +25,50 @@
     mList.forEach((m, i) => {
       const btn = document.createElement("button");
       btn.innerText = i;
-      btn.addEventListener("click", () => {
-        v = i; mInfo.innerText = mList[i];
-        const wrap = document.getElementById('wrap')
-        const secs = wrap.children;
-        Array.from(secs).forEach((secs, i) => {
-          secs.hidden = i !== v
-        })
-
-
-        load(v);
-      })
+      btn.addEventListener("click", () => { v = i; mInfo.innerText = mList[i]; })
       btns.appendChild(btn);
     })
-
-    load(0)
     //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼myscript▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-    function load(v) {
-      switch (v) {
-        // ----------【case 0】------------
-        case 0:
-          break;
-        // ----------【case 1】------------
-        case 1:
-          break;
-        // ----------【case 2】------------
-        case 2:
-          break;
-        // ----------【case 3】------------
-        case 3:
-          break;
-        // ----------【case 4】------------
-        case 4:
-          break;
-        default:
-          break;
-      }
+    document.addEventListener("keydown", (ev) => {
+    })
+
+    function runOnKeys(func, ...codes) {
+      let pressed = new Set();
+
+      document.addEventListener('keydown', function (event) {
+        pressed.add(event.code);
+
+        for (let code of codes) { // are all keys in the set?
+          console.log("【ログ: code】", code);
+          console.log("【ログ: pressed】", pressed);
+          if (!pressed.has(code)) {
+            return;
+          }
+        }
+
+        // yes, they are
+
+        // during the alert, if the visitor releases the keys,
+        // JavaScript does not get the "keyup" event
+        // and pressed set will keep assuming that the key is pressed
+        // so, to evade "sticky" keys, we reset the status
+        // if the user wants to run the hotkey again - let him press all keys again
+        pressed.clear();
+
+        func();
+      });
+
+      document.addEventListener('keyup', function (event) {
+        pressed.delete(event.code);
+      });
+
     }
 
+    runOnKeys(
+      () => alert("Hello!"),
+      "KeyQ",
+      "KeyW"
+    );
 
     // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
   </script>

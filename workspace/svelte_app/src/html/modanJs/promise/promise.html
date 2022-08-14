@@ -4,15 +4,19 @@
 <body>
 
   <div id="page-header">
-    <a href="toHomeLinkPath">HOME</a><span>pageTitle</span><span id="btns"></span><span id="mInfo"></span>
+    <a href="../../home.html">HOME</a><span>プロミス</span><span id="btns"></span><span id="mInfo"></span>
   </div>
   <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mybody▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
   <div id="wrap">
-    <section>0</section>
+    <section>
+    </section>
+
     <section hidden>1</section>
     <section hidden>2</section>
     <section hidden>3</section>
-    <section hidden>4</section>
+    <section hidden>
+      <button onclick="go()">Click me</button>
+    </section>
 
   </div>
   <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
@@ -23,7 +27,7 @@
       '0:',
       '1:',
       '2:',
-      '3:',
+      '3:タスク',
       '4:',
     ]
 
@@ -46,32 +50,36 @@
       btns.appendChild(btn);
     })
 
-    load(0)
+    // load(0) c
     //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼myscript▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-    function load(v) {
-      switch (v) {
-        // ----------【case 0】------------
-        case 0:
-          break;
-        // ----------【case 1】------------
-        case 1:
-          break;
-        // ----------【case 2】------------
-        case 2:
-          break;
-        // ----------【case 3】------------
-        case 3:
-          break;
-        // ----------【case 4】------------
-        case 4:
-          break;
-        default:
-          break;
-      }
+    function go() {
+      showCircle(150, 150, 100).then(div => {
+        div.classList.add('message-ball');
+        div.append("Hello, world!");
+      });
     }
 
+    function showCircle(cx, cy, radius) {
+      let div = document.createElement('div');
+      div.style.width = 0;
+      div.style.height = 0;
+      div.style.left = cx + 'px';
+      div.style.top = cy + 'px';
+      div.className = 'circle';
+      document.body.append(div);
 
-    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+      return new Promise(resolve => {
+        setTimeout(() => {
+          div.style.width = radius * 2 + 'px';
+          div.style.height = radius * 2 + 'px';
+
+          div.addEventListener('transitionend', function handler() {
+            div.removeEventListener('transitionend', handler);
+            resolve(div);
+          });
+        }, 0);
+      })
+    }    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
   </script>
 </body>
 
@@ -86,6 +94,29 @@
   #page-header {
     background-color: lightblue;
     padding: 5px;
+  }
+
+  .message-ball {
+    transition-property: width, height, margin-left, margin-top;
+    transition-duration: 2s;
+    position: fixed;
+    transform: translateX(-50%) translateY(-50%);
+    background-color: red;
+    border-radius: 50%;
+
+    width: 200px;
+    height: 200px;
+    top: 150px;
+    left: 150px;
+  }
+
+  .circle {
+    transition-property: width, height, margin-left, margin-top;
+    transition-duration: 2s;
+    position: fixed;
+    transform: translateX(-50%) translateY(-50%);
+    background-color: red;
+    border-radius: 50%;
   }
 
   /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mystyle▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */

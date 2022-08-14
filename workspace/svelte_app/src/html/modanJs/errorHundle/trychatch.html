@@ -1,0 +1,255 @@
+<!DOCTYPE HTML>
+<html>
+
+<body>
+
+  <div id="page-header">
+    <a href="../../home.html">HOME</a><span>トライキャッチ</span><span id="btns"></span><span id="mInfo"></span>
+  </div>
+  <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mybody▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
+  <input id="name" type="text" value="">
+  <input id="age" type="text" value="">
+  <button id="cj">create json</button>
+  <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
+
+  <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ script ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
+  <script>
+    const mList = [
+      '0:',
+      '1:',
+      '2:',
+      '3:',
+      '4:',
+    ]
+
+    let v = 0, m = mList[0];
+    mInfo.innerText = m
+    mList.forEach((m, i) => {
+      const btn = document.createElement("button");
+      btn.innerText = i;
+      btn.addEventListener("click", () => { v = i; mInfo.innerText = mList[i]; })
+      btns.appendChild(btn);
+    })
+    //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼myscript▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+    // let json = '{ "age": 30 }'; // 不完全なデータ
+
+
+    // try {
+
+    //   if (!json.name) throw new SyntaxError("no name")
+    //   let user = JSON.parseo(json);
+    //   alert(user.name); // name はありません!
+
+    // } catch (e) {
+    //   console.log("【ログ: e】", e);
+    // }
+
+    //  let json = '{ "age": 30 }'; // 不完全なデータ
+    // let json2 = '{ "age": 30 ,"name":"taro"}'; // 不完全なデータ
+    // try {
+
+    //   let user = JSON.parse(json2);
+
+    //   if (!user.name) {
+    //     throw new SyntaxError("Incomplete data: no name");
+    //   }
+
+    //   blabla(); // 予期しないエラー
+
+    //   alert(user.name);
+
+    // } catch (e) {
+
+    //   if (e.name == "SyntaxError") {
+    //     alert("JSON Error: " + e.message);
+    //   } else {
+    //     throw e; // 再スロー (*)
+    //   }
+
+    // }
+
+    // function readData() {
+    //   // let json = '{ "age": 30 }'; // 不完全なデータ
+    //   let json = '{ "age": 30 ,"name":"taro"}'; // 不完全なデータ
+    //   try {
+    //     let user = JSON.parse(json);
+
+    //     blabla(); // error!
+    //   } catch (e) {
+    //     // ...
+    //     if (e.name != 'SyntaxError') {
+    //       throw e; // 再スロー (今のエラーの扱い方を知らない)
+    //     }
+    //   }
+    // }
+
+    // try {
+    //   readData();
+    // } catch (e) {
+    //   alert("External catch got: " + e); // caught it!
+    // }
+
+    // class ValidationError extends Error {
+    //   constructor(message) {
+    //     super(message); // (1)
+    //     this.name = "ValidationError"; // (2)
+    //   }
+    // }
+
+    // function test() {
+    //   throw new ValidationError("Whoops!");
+    // }
+
+    // try {
+    //   test();
+    // } catch (err) {
+    //   alert(err.message); // Whoops!
+    //   alert(err.name); // ValidationError
+    //   alert(err.stack); // それぞれの行番号を持つネストされたコールのリスト
+    // }
+    let user;
+
+    const name = document.getElementById("name");
+    const age = document.getElementById("age");
+
+    cj.addEventListener("click", () => {
+      try {
+        const json = `{"name":"${name.value}","age":"${age.value}"}`
+        let user = JSON.parse(json);
+        readUser(user);
+        alert(user.name);
+      } catch (err) {
+        if (err instanceof ValidationError) {
+          alert("Invalid data: " + err.message); // Invalid data: No property: name
+          alert(err.name); // PropertyRequiredError
+          alert(err.property); // name
+        } else if (err instanceof SyntaxError) {
+          throw new ReadError("Syntax Error", err);
+        } else {
+          throw err; // 知らないエラーなので、再スロー (**)
+        }
+      }
+    }
+    )
+
+    class ReadError extends Error {
+      constructor(message, cause) {
+        super(message);
+        this.cause = cause;
+        this.name = 'ReadError';
+      }
+    }
+
+    class ValidationError extends Error { /*...*/ }
+    class PropertyRequiredError extends ValidationError { /* ... */ }
+
+    function validateUser(user) {
+      if (!user.age) {
+        throw new PropertyRequiredError("age");
+      }
+
+      if (!user.name) {
+        throw new PropertyRequiredError("name");
+      }
+    }
+
+    function readUser(json) {
+      let user;
+
+      try {
+        user = JSON.parse(json);
+      } catch (err) {
+        if (err instanceof SyntaxError) {
+          throw new ReadError("Syntax Error", err);
+        } else {
+          throw err;
+        }
+      }
+
+      try {
+        validateUser(user);
+      } catch (err) {
+        if (err instanceof ValidationError) {
+          throw new ReadError("Validation Error", err);
+        } else {
+          throw err;
+        }
+      }
+
+    }
+
+    try {
+      readUser('{bad json}');
+    } catch (e) {
+      if (e instanceof ReadError) {
+        alert(e);
+        // Original error: SyntaxError: Unexpected token b in JSON at position 1
+        alert("Original error: " + e.cause);
+      } else {
+        throw e;
+      }
+    }
+
+    // class ReadError extends Error {
+    //   constructor(message, cause) {
+    //     super(message);
+    //     this.cause = cause;
+    //     this.name = 'ReadError';
+    //   }
+    // }
+
+
+    // class MyError extends Error {
+    //   constructor(message) {
+    //     super(message);
+    //     this.name = this.constructor.name;
+    //   }
+    // }
+
+
+    // class ValidationError extends MyError {
+    // }
+
+    // class PropertyRequiredError extends ValidationError {
+    //   constructor(property) {
+    //     super("No property: " + property);
+    //     this.property = property;
+    //   }
+    // }
+
+    // // Usage
+    // function readUser(user) {
+    //   if (!user.name) {
+    //     throw new PropertyRequiredError("name");
+    //   }
+    //   if (!user.age) {
+    //     throw new PropertyRequiredError("age");
+    //   }
+    //   return user;
+    // }
+
+    // try..catch での動作例
+
+
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+  </script>
+</body>
+
+</html>
+
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ style ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
+<style>
+  body {
+    margin: 0px;
+  }
+
+  #page-header {
+    background-color: lightblue;
+    padding: 5px;
+  }
+
+  /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mystyle▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
+
+  /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+
+</style>

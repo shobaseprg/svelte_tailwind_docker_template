@@ -1,0 +1,228 @@
+<!DOCTYPE HTML>
+<html>
+
+<body>
+
+  <div id="page-header">
+    <a href="../home.html">HOME</a><span>オレオレプロミス</span><span id="btns"></span><span id="mInfo"></span>
+  </div>
+  <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mybody▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
+  <div id="wrap">
+    <section>0</section>
+    <section hidden>1</section>
+    <section hidden>2</section>
+    <section hidden>3</section>
+    <section hidden>4</section>
+
+  </div>
+  <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
+
+  <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ script ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
+  <script>
+    const mList = [
+      '0:',
+      '1:',
+      '2:',
+      '3:',
+      '4:',
+    ]
+
+    let v = 0, m = mList[0];
+    mInfo.innerText = m
+    mList.forEach((m, i) => {
+      const btn = document.createElement("button");
+      btn.innerText = i;
+      btn.addEventListener("click", () => {
+        v = i; mInfo.innerText = mList[i];
+        const wrap = document.getElementById('wrap')
+        const secs = wrap.children;
+        Array.from(secs).forEach((secs, i) => {
+          secs.hidden = i !== v
+        })
+
+
+        load(v);
+      })
+      btns.appendChild(btn);
+    })
+
+    load(0)
+    //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼myscript▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+    function load(v) {
+      switch (v) {
+        // ----------【case 0】------------
+        case 0:
+          class Yakusoku {
+            constructor(func) {
+              this.state = "pending"; // 内部状態; pending / fulfilled / rejected
+              this.resolvedValue = null; // resolve()で渡された値を保持
+              this.rejectedValue = null; // reject()で渡された値を保持
+              this.thenFunctions = []; // then()に渡された関数を保持
+
+              const resolve = (resolvedValue) => {
+                if (this.state !== "pending") {
+                  return; // 内部状態の変更は一度だけ
+                }
+                this.state = "fulfilled";
+                this.resolvedValue = resolvedValue;
+
+                // then()に渡された関数を全て実行
+                for (const thenFunction of this.thenFunctions) {
+                  try {
+                    const ret = thenFunction.onFulfilled(resolvedValue);
+                    if (isThenable(ret)) {
+                      // 戻り値がYakusokuオブジェクトならthen()に渡す
+                      ret.then(thenFunction.resolve, thenFunction.reject);
+                    }
+                    else {
+                      // Yakusokuオブジェクトでなければfulfilled
+                      thenFunction.resolve(ret);
+                    }
+                  }
+                  catch (err) {
+                    // 例外が発生したらrejected
+                    thenFunction.reject(err);
+                  }
+                }
+              };
+              const reject = (rejectedValue) => {
+                if (this.state !== "pending") {
+                  return; // 内部状態の変更は一度だけ
+                }
+                this.state = "rejected";
+                this.rejectedValue = rejectedValue;
+
+                // then()に渡された関数を全て実行
+                for (const thenFunction of this.thenFunctions) {
+                  try {
+                    const ret = thenFunction.onRejected(rejectedValue);
+                    if (isThenable(ret)) {
+                      // 戻り値がYakusokuオブジェクトならthen()に渡す
+                      ret.then(thenFunction.resolve, thenFunction.reject);
+                    }
+                    else {
+                      // Yakusokuオブジェクトでなければfulfilled
+                      thenFunction.resolve(ret);
+                    }
+                  }
+                  catch (err) {
+                    // 例外が発生したらrejected
+                    thenFunction.reject(err);
+                  }
+                }
+              };
+
+              try {
+                func(resolve, reject);
+              }
+              catch (err) {
+                // 例外が発生したらrejectedにする
+                reject(err);
+              }
+            }
+
+            then(onFulfilled, onRejected) {
+              if (typeof onFulfilled !== "function") {
+                onFulfilled = identity;
+              }
+              if (typeof onRejected !== "function") {
+                onRejected = thrower;
+              }
+
+              if (this.state === "pending") {
+                // pendingなら後で呼び出すので関数を記録しておく
+                return new Yakusoku((resolve, reject) => {
+                  this.thenFunctions.push({ onFulfilled, onRejected, resolve, reject });
+                });
+              }
+              if (this.state === "fulfilled") {
+                return wrapWithYakusoku(onFulfilled(this.resolvedValue));
+              }
+              if (this.state === "rejected") {
+                return wrapWithYakusoku(onRejected(this.rejectedValue));
+              }
+            }
+
+            catch(onRejected) {
+              return this.then(null, onRejected); // 1番目の引数をidentity functionにする
+            }
+          }
+
+          function identity(value) { // identity function
+            return value;
+          }
+
+          function thrower(err) { // thrower function
+            throw err;
+          }
+
+          function isThenable(value) {
+            if (value === null || value === undefined) {
+              return false;
+            }
+            return typeof value.then === "function";
+          }
+
+          function wrapWithYakusoku(value) {
+            if (isThenable(value)) {
+              return value;
+            }
+            return new Yakusoku((resolve) => {
+              resolve(value);
+            });
+          }
+          const rd = () => Math.floor(Math.random() * 100);
+
+          const yakusoku = new Yakusoku((resolve, reject) => {
+            setTimeout(() => {
+              const rate = rd();
+              rate >= 50 ? resolve(rate) : reject(rate);
+            }, 2000)
+          });
+
+          yakusoku.then((rate) => { console.log("ok", rate) }, (rate) => { console.log("er", rate) })
+
+
+
+          break;
+        // ----------【case 1】------------
+        case 1:
+          break;
+        // ----------【case 2】------------
+        case 2:
+          break;
+        // ----------【case 3】------------
+        case 3:
+          break;
+        // ----------【case 4】------------
+        case 4:
+          break;
+        default:
+          break;
+      }
+    }
+
+
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+  </script>
+</body>
+
+</html>
+
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ style ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
+
+<style>
+  body {
+    margin: 0px;
+  }
+
+  #page-header {
+    background-color: lightblue;
+    padding: 5px;
+  }
+
+  /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mystyle▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
+
+  /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+
+</style>

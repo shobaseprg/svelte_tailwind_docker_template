@@ -4,17 +4,10 @@
 <body>
 
   <div id="page-header">
-    <a href="toHomeLinkPath">HOME</a><span>pageTitle</span><span id="btns"></span><span id="mInfo"></span>
+    <a href="../../home.html">HOME</a><span>コールバック</span><span id="btns"></span><span id="mInfo"></span>
   </div>
   <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mybody▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
-  <div id="wrap">
-    <section>0</section>
-    <section hidden>1</section>
-    <section hidden>2</section>
-    <section hidden>3</section>
-    <section hidden>4</section>
 
-  </div>
   <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
 
   <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ script ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
@@ -32,46 +25,47 @@
     mList.forEach((m, i) => {
       const btn = document.createElement("button");
       btn.innerText = i;
-      btn.addEventListener("click", () => {
-        v = i; mInfo.innerText = mList[i];
-        const wrap = document.getElementById('wrap')
-        const secs = wrap.children;
-        Array.from(secs).forEach((secs, i) => {
-          secs.hidden = i !== v
-        })
-
-
-        load(v);
-      })
+      btn.addEventListener("click", () => { v = i; mInfo.innerText = mList[i]; load(v); })
       btns.appendChild(btn);
     })
-
-    load(0)
+    load(0);
     //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼myscript▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
     function load(v) {
       switch (v) {
-        // ----------【case 0】------------
         case 0:
+          function loadScript(src, callback) {
+            let script = document.createElement('script');
+            script.src = src;
+            script.onload = () => callback(script);
+            document.head.append(script);
+          }
+
+          loadScript('https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.2.0/lodash.js', script => {
+            alert(`Cool, the ${script.src} is loaded`);
+            alert(_); // ロードされたスクリプトで宣言されている関数
+          });
           break;
-        // ----------【case 1】------------
         case 1:
           break;
-        // ----------【case 2】------------
         case 2:
+
           break;
-        // ----------【case 3】------------
         case 3:
+
           break;
-        // ----------【case 4】------------
+
         case 4:
           break;
+
+        case 5:
+          break;
+
+
+
         default:
           break;
       }
     }
-
-
-    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
   </script>
 </body>
 

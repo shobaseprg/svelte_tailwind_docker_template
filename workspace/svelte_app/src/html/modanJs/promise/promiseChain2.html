@@ -4,7 +4,7 @@
 <body>
 
   <div id="page-header">
-    <a href="toHomeLinkPath">HOME</a><span>pageTitle</span><span id="btns"></span><span id="mInfo"></span>
+    <a href="../../home.html">HOME</a><span>プロミスチェーン2</span><span id="btns"></span><span id="mInfo"></span>
   </div>
   <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mybody▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
   <div id="wrap">
@@ -52,6 +52,22 @@
       switch (v) {
         // ----------【case 0】------------
         case 0:
+          fetch('/article/promise-chaining/user.json')
+            // json としてロード
+            .then(response => response.json())
+            // github へのリクエスト
+            .then(user => fetch(`https://api.github.com/users/${user.name}`))
+            // json としてロード
+            .then(response => response.json())
+            // ３秒間アバター画像を表示 (githubUser.avatar_url)
+            .then(githubUser => {
+              let img = document.createElement('img');
+              img.src = githubUser.avatar_url;
+              img.className = "promise-avatar-example";
+              document.body.append(img);
+
+              setTimeout(() => img.remove(), 3000); // (*)
+            });
           break;
         // ----------【case 1】------------
         case 1:

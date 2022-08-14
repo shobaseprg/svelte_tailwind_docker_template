@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+
+<body>
+
+  <div id="page-header">
+    <a href="../../home.html">HOME</a><span>プロミスチェーン</span><span id="btns"></span><span id="mInfo"></span>
+  </div>
+  <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mybody▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
+  <div id="wrap">
+    <section>0</section>
+    <section hidden>1</section>
+    <section hidden>2</section>
+    <section hidden>3</section>
+    <section hidden>
+      <button id="ok">ok</button>
+      <button id="ng">ng</button>
+    </section>
+  </div>
+  <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲  -->
+
+  <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ script ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
+  <script>
+    const mList = [
+      '0:シンプルチェーン',
+      '1:プロミスの返却',
+      '2:ロードスクリプト',
+      '3:thenable',
+      '4:myPromise',
+    ]
+
+    let v = 0, m = mList[0];
+    mInfo.innerText = m
+    mList.forEach((m, i) => {
+      const btn = document.createElement("button");
+      btn.innerText = i;
+      btn.addEventListener("click", () => {
+        v = i; mInfo.innerText = mList[i];
+        const wrap = document.getElementById('wrap')
+        const secs = wrap.children;
+        Array.from(secs).forEach((secs, i) => {
+          secs.hidden = i !== v
+        })
+
+
+        load(v);
+      })
+      btns.appendChild(btn);
+    })
+
+
+    //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼myscript▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+    function load(v) {
+      switch (v) {
+        // ----------------------
+        case 0:
+          new Promise(function (resolve, reject) {
+
+            setTimeout(() => resolve(1), 1000); // (*)
+
+          }).then(function (result) { // (**)
+
+            alert(result); // 1
+            return result * 2;
+
+          }).then(function (result) { // (***)
+
+            alert(result); // 2
+            return result * 2;
+
+          }).then(function (result) {
+
+            alert(result); // 4
+            return result * 2;
+
+          });
+          break;
+        // ----------------------
+        case 1:
+          new Promise(function (resolve, reject) {
+
+            setTimeout(() => resolve(1), 1000);
+
+          }).then(function (result) {
+
+            alert(result); // 1
+
+            return new Promise((resolve, reject) => { // (*)
+              setTimeout(() => resolve(result * 2), 1000);
+            });
+
+          }).then(function (result) { // (**)
+
+            alert(result); // 2
+
+            return new Promise((resolve, reject) => {
+              setTimeout(() => resolve(result * 2), 1000);
+            });
+
+          }).then(function (result) {
+
+            alert(result); // 4
+
+          });
+          break;
+        // ----------------------
+        case 2:
+          function loadScript(src) {
+            return new Promise(function (resolve, reject) {
+              let script = document.createElement('script')
+              script.src = src;
+
+              script.onload = () => resolve(script)
+              script.onerror = () => reject(new Error("Script load error: " + src));
+
+              document.head.append(script);
+            });
+          }
+
+          loadScript("/article/promise-chaining/one.js")
+            .then(script => loadScript("/article/promise-chaining/two.js"))
+            .then(script => loadScript("/article/promise-chaining/three.js"))
+            .then(script => {
+              // scripts are loaded, we can use functions declared there
+              one();
+              two();
+              three();
+            });
+          break;
+        // ----------------------
+        case 3:
+          class Thenable {
+            constructor(num) {
+              this.num = num;
+            }
+            then(resolve, reject) {
+              setTimeout(() => resolve(this.num * 2), 1000); // (**)
+            }
+          }
+
+          const a = new Promise(
+            (resolve, reject => {
+              resolve(1)
+            })
+          )
+
+
+          const b = a.then(result => {
+            return new Thenable(result)
+          }, alert("error"));
+
+          b.then(alert); // 1000ms 後に 2 を表示
+          break;
+        // ----------------------
+        case 4:
+          const ok = document.getElementById("ok");
+          const ng = document.getElementById("ng");
+
+          let error;
+          ok.addEventListener("click", () => { error = false; load() })
+          ng.addEventListener("click", () => { error = true; load() })
+
+          class MyPromise {
+            constructor(callback = () => { }) {
+              this.callback = callback;
+              this.status = "pending"
+            }
+            then(onResolve, onReject = null) {
+              const r = this.callback(onResolve, onReject);
+              return new MyPromise((resolve, reject = null) => {
+                try {
+                  resolve(r)
+                } catch (e) {
+                  reject(e)
+                }
+              });
+            }
+            catch(onReject) {
+              console.log("error");
+              const r = this.callback(onResolve, onReject);
+              return new MyPromise((resolve, reject) => { });
+            }
+          }
+
+          function load() {
+            const myPromise = new MyPromise((resolve, reject) => {
+              if (error) {
+                reject("以上");
+                return "error end"
+              } else {
+                resolve("正常");
+                return "normal end"
+              }
+            });
+            myPromise.then((word) => { console.log(word) }, (word) => { console.log(word) })
+              .then((r) => { console.log(r) })
+              .catch((e) => { console.log(e) })
+          }
+
+          break;
+        // ----------------------
+        case 5:
+          break;
+
+        default:
+          break;
+      }
+
+    }
+
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+  </script>
+</body>
+
+</html>
+
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ style ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
+<style>
+  body {
+    margin: 0px;
+  }
+
+  #page-header {
+    background-color: lightblue;
+    padding: 5px;
+  }
+
+  /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼mystyle▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
+
+  /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+
+</style>

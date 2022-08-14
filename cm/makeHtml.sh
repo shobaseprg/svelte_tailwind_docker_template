@@ -18,6 +18,17 @@ else
         VAR="event"
       fi
 
+      if [ $VAR = "f" ];then
+        VAR="form"
+      fi
+
+      if [ $VAR = "er" ];then
+        VAR="errorHundle"
+      fi
+
+      if [ $VAR = "p" ];then
+        VAR="promise"
+      fi
       DYNAMIC_DIR_PATH="${DYNAMIC_DIR_PATH}/${VAR}"
       TO_PAGE_LINK="${TO_PAGE_LINK}/${VAR}"
       mkdir $DYNAMIC_DIR_PATH
