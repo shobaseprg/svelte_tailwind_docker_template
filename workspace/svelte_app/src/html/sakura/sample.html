@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang='ja'>
+
+<head>
+  <meta charset='utf-8'>
+</head>
+
+<body>
+  <button data-tooltip='ボタン1'>SAMPLE</button>
+  <button data-tooltip='ボタン2'>SAMPLE</button><br>
+  <input type='text' data-tooltip='テキスト'>
+  <input type='time' data-tooltip='時刻'>
+
+  <script>
+    'use strict';
+    addEventListener('DOMContentLoaded', () => {
+      const uid = Math.random().toString(36).slice(2);
+      document.body.insertAdjacentHTML('beforeend', `<div id='${uid}'></div>`);
+
+      const tooltip = {
+        elem: document.getElementById(uid),
+      };
+      Object.assign(tooltip.elem.style, {
+        border: '1px blue solid',
+        backgroundColor: 'lightcyan',
+        color: 'blue',
+        padding: '0 8px 0 8px',
+        borderRadius: '5px',
+        position: 'absolute',
+        display: 'none',
+        zIndex: 99,
+      });
+
+      addEventListener('mousemove', ev => {
+        if (!ev.target.dataset.tooltip || (tooltip.elem).display === 'block') return;
+
+        clearTimeout(tooltip.id);
+        tooltip.t = ev.target;
+        tooltip.id = setTimeout(() => {
+          tooltip.elem.textContent = tooltip.t.dataset.tooltip;
+          Object.assign(tooltip.elem.style, {
+            display: 'block',
+            left: `${tooltip.t.offsetLeft}px`,
+            top: `${tooltip.t.offsetTop + tooltip.t.offsetHeight}px`,
+          });
+        }, 250);
+      });
+
+      addEventListener('mouseout', ev => {
+        if (!ev.target.dataset.tooltip) return;
+        tooltip.elem.style.display = 'none';
+        delete tooltip.t;
+        clearTimeout(tooltip.id);
+      });
+    });
+  </script>
+</body>
+
+</html>

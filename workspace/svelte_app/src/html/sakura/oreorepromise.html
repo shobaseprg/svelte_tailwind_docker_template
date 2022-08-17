@@ -46,6 +46,7 @@
       btns.appendChild(btn);
     })
 
+    let loop = 0;
     load(0)
     //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼myscript▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
     function load(v) {
@@ -53,13 +54,18 @@
         // ----------【case 0】------------
         case 0:
           class Yakusoku {
-            constructor(func) {
+            constructor(constructorFunc) {//funcは二つの引数を受け取る関数。
               this.state = "pending"; // 内部状態; pending / fulfilled / rejected
               this.resolvedValue = null; // resolve()で渡された値を保持
               this.rejectedValue = null; // reject()で渡された値を保持
               this.thenFunctions = []; // then()に渡された関数を保持
+              loop++;
 
+              // function resolve ------------------------------
               const resolve = (resolvedValue) => {
+                //resolveメソッドは引数に渡された値をresolvedValueに格納する。
+                //そして
+                // console.log("【ログ: 4】is Run");
                 if (this.state !== "pending") {
                   return; // 内部状態の変更は一度だけ
                 }
@@ -85,6 +91,8 @@
                   }
                 }
               };
+
+              // function reject ------------------------------
               const reject = (rejectedValue) => {
                 if (this.state !== "pending") {
                   return; // 内部状態の変更は一度だけ
@@ -112,8 +120,10 @@
                 }
               };
 
+              // exe func --------------------------
               try {
-                func(resolve, reject);
+                console.log(`【ログ:constructor func exe ${loop}】is Run`);
+                constructorFunc(resolve, reject);//クラス内で定義したresolveとrejectを渡す。
               }
               catch (err) {
                 // 例外が発生したらrejectedにする
@@ -121,7 +131,9 @@
               }
             }
 
-            then(onFulfilled, onRejected) {
+            // method then ------------------------
+            then(onFulfilled, onRejected) {//thenは必ずpromiseオブジェクトを返す
+              console.log(`【ログ:then func ${loop}】is Run`);
               if (typeof onFulfilled !== "function") {
                 onFulfilled = identity;
               }
@@ -129,20 +141,23 @@
                 onRejected = thrower;
               }
 
-              if (this.state === "pending") {
+              if (this.state === "pending") {//constructorから呼び出されるresolveがキューに積まれた場合(非同期)
                 // pendingなら後で呼び出すので関数を記録しておく
-                return new Yakusoku((resolve, reject) => {
+                console.log(`【ログ:create new Yakusoku ${loop}】is Run`);
+                return new Yakusoku((resolve, reject) => {//新しくPromiseを返しthenFunctionsに登録される。
+                  console.log(`【ログ:my constructor func ${loop}】is Run`);
                   this.thenFunctions.push({ onFulfilled, onRejected, resolve, reject });
                 });
               }
               if (this.state === "fulfilled") {
+                console.log(`【ログ:wrapWithYakusoku func ${loop}】is Run`);
                 return wrapWithYakusoku(onFulfilled(this.resolvedValue));
               }
               if (this.state === "rejected") {
                 return wrapWithYakusoku(onRejected(this.rejectedValue));
               }
             }
-
+            // method catch ------------------------
             catch(onRejected) {
               return this.then(null, onRejected); // 1番目の引数をidentity functionにする
             }
@@ -156,33 +171,53 @@
             throw err;
           }
 
+          // function is isThenable --------------------------
           function isThenable(value) {
             if (value === null || value === undefined) {
               return false;
             }
-            return typeof value.then === "function";
+            return typeof value.then === "function";//thenメソッドを持っているか
           }
 
+          // function is isThenable --------------------------
           function wrapWithYakusoku(value) {
             if (isThenable(value)) {
-              return value;
+              return value;//promiseオブジェクトなのでそのまま返す
             }
-            return new Yakusoku((resolve) => {
+            return new Yakusoku((resolve) => {//promiseオブジェクトでラップして返す
               resolve(value);
             });
           }
+
+          // code start --------------------------------------------------------------------------------------------
           const rd = () => Math.floor(Math.random() * 100);
 
+          // make promise
           const yakusoku = new Yakusoku((resolve, reject) => {
+            console.log(`【ログ:my constructor func ${loop}】is Run`);
             setTimeout(() => {
               const rate = rd();
-              rate >= 50 ? resolve(rate) : reject(rate);
-            }, 2000)
+              console.log(`【ログ:async func ${loop}】is Run`);
+              rate >= 0 ? resolve(rate) : reject(rate);
+            }, 100)
           });
 
-          yakusoku.then((rate) => { console.log("ok", rate) }, (rate) => { console.log("er", rate) })
-
-
+          //exe promise
+          yakusoku.then(
+            (rate) => {
+              console.log("ok", rate);
+              return rate * 2
+            },
+            (rate) => {
+              console.log("er", rate);
+              return rate * 2
+            })
+            .then((v) => {
+              new Yakusoku((resolve) => {
+                setTimeout(() => { resolve(v * 2) }, 10)
+              }
+              ).then((v) => { console.log("【ログ: v】", v); })
+            })
 
           break;
         // ----------【case 1】------------
